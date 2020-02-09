@@ -101,14 +101,19 @@ if ($handle = opendir('Takeout/Keep')) {
                 margin-left: -15rem;
             }
         }
+
+        audio {
+            width: -webkit-fill-available;
+        }
+
+        .sharees img {
+            width: 20px;
+        }
     </style>
 </head>
 
 <body>
-
-
     <div class="card-columns m-3">
-
     </div>
 </body>
 <script src="resources/jquery-3.4.1.min.js"></script>
@@ -192,6 +197,7 @@ if ($handle = opendir('Takeout/Keep')) {
             var content = "";
             var records = "";
             var labels = "";
+            var sharees = "";
             var body = false;
 
             if ("title" in data) {
@@ -205,25 +211,16 @@ if ($handle = opendir('Takeout/Keep')) {
                 for (var index in attachments) {
                     var obj = attachments[index];
 
-                    if (obj.mimetype == "audio/3gp"){
-                        records += "<audio controls><source='"+obj.filePath+"'></audio>";
+                    if (obj.mimetype == "audio/3gp") {
+                        records += "<audio controls><source='" + obj.filePath + "'></audio>";
                         body = true;
                     }
 
-                    
+
                     if (obj.mimetype == "image/png" || obj.mimetype == "image/jpeg" || obj.mimetype == "image/jpg") {
-                           images += "<img class='card-img-top' src='Takeout/Keep/" + obj.filePath + `' onError="imgError(this, '` + obj.filePath + `')"'>`;
-                           body = true;
-                     }
-                    
-
-
-                    //for (var prop in obj) {
-                    //    if (prop == "filePath") {
-                    //        //console.log(name, extension)
-                    //        images += "<img class='card-img-top' src='Takeout/Keep/" + obj[prop] + `' onError="imgError(this, '` + obj[prop] + `')"'>`;
-                    //    }
-                    //}
+                        images += "<img class='card-img-top' src='Takeout/Keep/" + obj.filePath + `' onError="imgError(this, '` + obj.filePath + `')"'>`;
+                        body = true;
+                    }
                 }
             }
 
@@ -246,9 +243,9 @@ if ($handle = opendir('Takeout/Keep')) {
                     "<ul>" +
                     itens +
                     "</ul>";
-                    body = true;
-            } 
-            
+                body = true;
+            }
+
             if ("textContent" in data) {
                 var preContent = data.textContent;
                 var textContent = preContent.replace(/(?:\r\n|\r|\n)/g, '<br>');
@@ -258,7 +255,7 @@ if ($handle = opendir('Takeout/Keep')) {
                         "<p class='card-text'>" +
                         textContent +
                         "</p>";
-                        body = true;
+                    body = true;
                 } else {
                     //IF THERE IS NO TITLE OR CONTENT IN THE NOTE, THE CARD HAS NO BODY
                     if (title != "" && title != null) {
@@ -277,17 +274,30 @@ if ($handle = opendir('Takeout/Keep')) {
                 for (var name in preLabels) {
                     var obj = preLabels[name];
                     for (var prop in obj) {
-                        labels += "<span class='badge badge-light'>" + obj[prop] + "</span>";
+                        labels += "<span class='badge badge-dark text-white'>" + obj[prop] + "</span>";
                     }
                 }
             }
+
+            if ("sharees" in data) {
+                people = data.sharees;
+
+                for (var index in people) {
+                    var obj = people[index];
+                    var isOwner = obj.isOwner; //needs treatment
+                    var type = obj.type; //needs treatment
+                    sharees += "<span class='badge badge-light'><img src='resources/img/person.png' width='15px'>" + obj.email + "</span>";
+                }
+            }
+
+
 
             if ("annotations" in data) {
                 var annotations = data.annotations;
             }
 
-            if (body == true){
-                content = "<div class='card-body'>" + content + records + "</div";
+            if (body == true) {
+                content = "<div class='card-body'>" + content + records + "</div>";
             } else {
                 content = "";
             }
@@ -296,8 +306,11 @@ if ($handle = opendir('Takeout/Keep')) {
                 images +
                 content +
                 "<div class='card-footer p-1 text-center'>" +
-                "<div class='labels pt-1'>" +
+                "<div class='labels mt-1'>" +
                 labels +
+                "</div>" +
+                "<div class='sharees mt-1'>" +
+                sharees +
                 "</div>" +
                 "<div><p class='card-text  text-center'><small class='text-muted'> Edited:&nbsp;&nbsp;" + convertTS(userEditedTimestampUsec) + "</small></p></div>" +
                 "</div>" +
