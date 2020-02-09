@@ -8,7 +8,7 @@ A tool to visualize Google Keep notes exported via Takeout, instead of having to
   <li>Download your Google Keep notes using <a href="https://takeout.google.com/">Google Takeout</a></li>
   <li>Download or clone this repository into your machine</li>
   <li>Unzip the file, and copy the 'Takeout' folder into the visualizer repository (You can use other directory structure, just change the dir var</li>
-  <li>You need to start a php server and host the repository. (You can learn how to install PHP here <a href="https://phptherightway.com/#getting_started">PHP The Right Way</a)></li>
+  <li>You need to start a php server and host the repository. (You can learn how to install PHP here <a href="https://phptherightway.com/#getting_started">PHP The Right Way</a>)</li>
   <li>Accces index.php and enjoy your notes.</li>
 </ul>
 
