@@ -25,5 +25,6 @@ A tool to visualize Google Keep notes exported via Takeout, instead of having to
  <hr>
  <h4>To be implemented</h4>
  <ul>
-  <li> Node.js approach </li>
+  <li> Node.js approach </li> 
+  <li> Note editing </li>
  </ul>
