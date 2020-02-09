@@ -17,6 +17,7 @@ A tool to visualize Google Keep notes exported via Takeout, instead of having to
 <ul>
   <li> Google Keep-like grid view </li>
   <li> Support multiple images and voice records </li>
+  <li> Create preview for links, and list the note sharees </li>
   <li> Groups the notes by category </li>
   <li> Build the notes with accurate JSON data, instead of scrapping HTML tags </li>
   <li> Doesn't limit the size for the notes, so you have full-lenght text</li>
