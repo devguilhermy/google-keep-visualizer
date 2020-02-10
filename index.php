@@ -118,14 +118,24 @@ if ($handle = opendir('Takeout/Keep')) {
         }
 
         .list-group-item {
-            
-    padding: 0.5rem !important;
+
+            padding: 0.5rem !important;
+        }
+
+        .morecontent span {
+            display: none;
+        }
+
+        .morelink {
+            display: block;
         }
     </style>
 </head>
 
 <body>
-    <div class="card-columns m-2">
+    <div class="card-columns m-2" id="pinned-notes">
+    </div>
+    <div class="card-columns m-2" id="regular-notes">
     </div>
 </body>
 <script src="resources/jquery-3.4.1.min.js"></script>
@@ -134,6 +144,21 @@ if ($handle = opendir('Takeout/Keep')) {
 <script src="resources/script.js"></script>
 <script type="text/javascript">
     var dir = "Takeout/Keep/";
+
+    $(document).ready(function() {
+        // Configure/customize these variables.
+        var showChar = 200; // How many characters are shown by default
+        var ellipsestext = "...";
+        var moretext = "Show more >";
+        var lesstext = "Show less";
+
+
+        $('.more').each(function() {
+            var arroz = $(this).innerText();
+            alert(arroz.lenght);
+
+        });
+    });
 
     //Solution for the JSON note incorrectly listing JPG attachments as JPEG
     //WHEN THE IMAGE FILE CAN NOT BE FOUND IN THE LOOP, THIS FUNCTION REPLACES THE EXTENSION NAME
@@ -162,12 +187,18 @@ if ($handle = opendir('Takeout/Keep')) {
     var qtFiles = files.lenght;
     var counter = 0;
     var arrayNotes = [];
+    var pinned = [];
+    var archived = [];
+    var trashed = [];
 
     function loadJSON(file) {
         var url = dir + file;
 
-        $.getJSON(url, function(data) {
 
+        $.getJSON(url, function(data) {
+            //if (data.isPinned == true) {
+            //    pinned.push(data);
+            //}
 
             if (counter == files.length - 1) {
                 arrayNotes[counter] = data;
@@ -177,9 +208,9 @@ if ($handle = opendir('Takeout/Keep')) {
                     return b.userEditedTimestampUsec - a.userEditedTimestampUsec;
                 });
 
-                ordenator.forEach(loadNote);
+                arrayNotes.forEach(loadNote);
             } else {
-                ordenator[counter] = data;
+                arrayNotes[counter] = data;
                 counter++;
             }
 
@@ -304,15 +335,15 @@ if ($handle = opendir('Takeout/Keep')) {
                 var obj = annotations[index];
                 var description = obj.description;
                 var source = obj.source; //needs treatment
-                var title = obj.title; 
+                var title = obj.title;
                 var url = obj.url;
-                links += "<div class='card "+color+"'><a class='mb-3' href='"+obj.url+"'><li class='list-group-item bg-light'><strong>" + title + "</strong><p class='text-muted'>"+description+"</p></li></a></div>";
+                links += "<div class='card " + color + "'><a class='mb-3' href='" + obj.url + "'><li class='list-group-item bg-light'><strong>" + title + "</strong><p class='text-muted'>" + description + "</p></li></a></div>";
             }
 
         }
 
         if (body == true) {
-            content = "<div class='card-body'>" + content + records + links + "</div>";
+            content = "<div class='card-body'><div class='text more'>" + content + "</div>" + records + links + "</div>";
         } else {
             content = "";
         }
@@ -331,7 +362,11 @@ if ($handle = opendir('Takeout/Keep')) {
             "</div>" +
             "</div>";
 
-        $(".card-columns").lazy().append(note);
+        //if (isPinned == true) {
+        //    $("#pinned-notes").append(note);
+        //} else {
+        $("#regular-notes").append(note);
+        //}
 
 
     }
