@@ -21,6 +21,7 @@ if ($handle = opendir('Takeout/Keep')) {
     <title>Document</title>
     <link rel="stylesheet" href="resources/style.css">
     <link rel="stylesheet" href="resources/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="resources/grid.css">
     <style>
         @media screen and (min-width: 1200px) {
             .bricklayer-column-sizer {
@@ -102,25 +103,38 @@ if ($handle = opendir('Takeout/Keep')) {
             }
         }
 
+        .card {
+
+            word-break: break-word;
+        }
+
         audio {
+            margin-top: 10px;
             width: -webkit-fill-available;
         }
 
         .sharees img {
             width: 20px;
         }
+
+        .list-group-item {
+            
+    padding: 0.5rem !important;
+        }
     </style>
 </head>
 
 <body>
-    <div class="card-columns m-3">
+    <div class="card-columns m-2">
     </div>
 </body>
 <script src="resources/jquery-3.4.1.min.js"></script>
-<script type="text/javascript" src="resources/jquery.lazy-master/jquery.lazy.min.js"></script>
+<script src="resources/jquery.lazy-master/jquery.lazy.min.js"></script>
 <script src="resources/bootstrap/js/bootstrap.min.js"></script>
 <script src="resources/script.js"></script>
-<script>
+<script type="text/javascript">
+    var dir = "Takeout/Keep/";
+
     //Solution for the JSON note incorrectly listing JPG attachments as JPEG
     //WHEN THE IMAGE FILE CAN NOT BE FOUND IN THE LOOP, THIS FUNCTION REPLACES THE EXTENSION NAME
     function imgError(tag, file) {
@@ -142,184 +156,183 @@ if ($handle = opendir('Takeout/Keep')) {
         $(tag).attr("src", "https://image.freepik.com/free-vector/error-404-found-glitch-effect_8024-4.jpg");
     }
 
-
-    function myFunction(file) {
-        var url = "Takeout/Keep/" + file;
-
-        $.getJSON(url, function(data) {
-            ordenator[counter] = {
-                "url": url,
-                "timestamp": data.userEditedTimestampUsec
-            };
-
-            // console.log(counter, ordenator[counter]);
-            counter++;
-
-            if (counter == files.length) {
-                ordenator.sort(function(a, b) {
-                    return b.timestamp - a.timestamp;
-                })
-
-                for (let index = 0; index < ordenator.length; index++) {
-                    console.log(ordenator[index].url)
-                    console.log(ordenator[index].timestamp);
-
-                    getNote(ordenator[index].url);
-                }
-
-                // console.log(ordenator)
-            }
-        });
-    }
-
     var files = <?php echo json_encode($arrayFiles) ?>;
-    files.forEach(myFunction);
+    files.forEach(loadJSON);
 
     var qtFiles = files.lenght;
     var counter = 0;
     var ordenator = [];
 
-    // console.log(ordenator);
+    function loadJSON(file) {
+        var url = dir + file;
 
-    //'Takeout/Keep/Goleta, California.json'
-    function getNote(obj) {
-        $.getJSON(obj, function(data) {
-            var note = "";
-
-            var color = data.color;
-            var isTrashed = data.isTrashed;
-            var isPinned = data.isPinned;
-            var isArchived = data.isArchived;
-            var userEditedTimestampUsec = data.userEditedTimestampUsec;
-
-            var title = "";
-            var images = "";
-            var content = "";
-            var records = "";
-            var labels = "";
-            var sharees = "";
-            var body = false;
-
-            if ("title" in data) {
-                if (data.title != "" && data.title != null) {
-                    title = "<h5>" + data.title + "</h5>";
-                }
-            }
-
-            if ("attachments" in data) {
-                var attachments = data.attachments;
-                for (var index in attachments) {
-                    var obj = attachments[index];
-
-                    if (obj.mimetype == "audio/3gp") {
-                        records += "<audio controls><source='" + obj.filePath + "'></audio>";
-                        body = true;
-                    }
+        $.getJSON(url, function(data) {
 
 
-                    if (obj.mimetype == "image/png" || obj.mimetype == "image/jpeg" || obj.mimetype == "image/jpg") {
-                        images += "<img class='card-img-top' src='Takeout/Keep/" + obj.filePath + `' onError="imgError(this, '` + obj.filePath + `')"'>`;
-                        body = true;
-                    }
-                }
-            }
+            if (counter == files.length - 1) {
+                ordenator[counter] = data;
 
-            //To make the notes image-only when there is no text content or title
+                ordenator.sort(function(a, b) {
+                    return b.userEditedTimestampUsec - a.userEditedTimestampUsec;
+                });
 
-            if ("listContent" in data) {
-                var listContent = data.listContent;
-                var itens = "";
-
-                for (var text in listContent) {
-                    var obj = listContent[text];
-                    for (var prop in obj) {
-                        if (prop == "text") {
-                            itens += "<li>" + obj[prop] + "</li>";
-                        }
-                    }
-                }
-
-                content = title +
-                    "<ul>" +
-                    itens +
-                    "</ul>";
-                body = true;
-            }
-
-            if ("textContent" in data) {
-                var preContent = data.textContent;
-                var textContent = preContent.replace(/(?:\r\n|\r|\n)/g, '<br>');
-
-                if (textContent != "" && textContent != null) {
-                    content = title +
-                        "<p class='card-text'>" +
-                        textContent +
-                        "</p>";
-                    body = true;
-                } else {
-                    //IF THERE IS NO TITLE OR CONTENT IN THE NOTE, THE CARD HAS NO BODY
-                    if (title != "" && title != null) {
-                        content = title;
-                        body = true;
-                    } else {
-                        content = "";
-                        body = false;
-                    }
-                }
-            }
-
-
-            if ("labels" in data) {
-                preLabels = data.labels;
-                for (var name in preLabels) {
-                    var obj = preLabels[name];
-                    for (var prop in obj) {
-                        labels += "<span class='badge badge-dark text-white'>" + obj[prop] + "</span>";
-                    }
-                }
-            }
-
-            if ("sharees" in data) {
-                people = data.sharees;
-
-                for (var index in people) {
-                    var obj = people[index];
-                    var isOwner = obj.isOwner; //needs treatment
-                    var type = obj.type; //needs treatment
-                    sharees += "<span class='badge badge-light'><img src='resources/img/person.png' width='15px'>" + obj.email + "</span>";
-                }
-            }
-
-
-
-            if ("annotations" in data) {
-                var annotations = data.annotations;
-            }
-
-            if (body == true) {
-                content = "<div class='card-body'>" + content + records + "</div>";
+                ordenator.forEach(loadNote);
             } else {
-                content = "";
+                ordenator[counter] = data;
+                counter++;
             }
-
-            note = "<div class='card " + color + " t-2'>" +
-                images +
-                content +
-                "<div class='card-footer p-1 text-center'>" +
-                "<div class='labels mt-1'>" +
-                labels +
-                "</div>" +
-                "<div class='sharees mt-1'>" +
-                sharees +
-                "</div>" +
-                "<div><p class='card-text  text-center'><small class='text-muted'> Edited:&nbsp;&nbsp;" + convertTS(userEditedTimestampUsec) + "</small></p></div>" +
-                "</div>" +
-                "</div>";
-
-            $(".card-columns").append(note);
-
 
         });
+
+    }
+
+
+
+    function loadNote(data) {
+        var note = "";
+
+        var color = data.color;
+        var isTrashed = data.isTrashed;
+        var isPinned = data.isPinned;
+        var isArchived = data.isArchived;
+        var userEditedTimestampUsec = data.userEditedTimestampUsec;
+
+        var title = "";
+        var images = "";
+        var content = "";
+        var records = "";
+        var labels = "";
+        var links = "";
+        var sharees = "";
+        var body = false;
+
+        if ("title" in data) {
+            if (data.title != "" && data.title != null) {
+                title = "<h5>" + data.title + "</h5>";
+            }
+        }
+
+        if ("attachments" in data) {
+            var attachments = data.attachments;
+            for (var index in attachments) {
+                var obj = attachments[index];
+
+                if (obj.mimetype == "audio/3gp") {
+                    records += "<audio controls><source='" + obj.filePath + "'></audio>";
+                    body = true;
+                }
+
+
+                if (obj.mimetype == "image/png" || obj.mimetype == "image/jpeg" || obj.mimetype == "image/jpg") {
+                    images += "<img class='card-img-top' src='Takeout/Keep/" + obj.filePath + `' onError="imgError(this, '` + obj.filePath + `')"'>`;
+                    body = true;
+                }
+            }
+        }
+
+        //To make the notes image-only when there is no text content or title
+
+        if ("listContent" in data) {
+            var listContent = data.listContent;
+            var itens = "";
+            var index = 1;
+            for (var text in listContent) {
+                var obj = listContent[text];
+                var checked = "";
+                if (obj.isChecked == true) {
+                    checked = "checked";
+                }
+                itens += "<div class='form-check'><input type='checkbox' " + checked + " class='form-check-input' id='checkbox" + index + "' onclick='return false'><label class='form-check-label' for='checkbox" + index + "'>" + obj.text + "</label></div>";
+                index++;
+            }
+
+            content = title + itens;
+            body = true;
+        }
+
+        if ("textContent" in data) {
+            var preContent = data.textContent;
+            var textContent = preContent.replace(/(?:\r\n|\r|\n)/g, '<br>');
+
+            if (textContent != "" && textContent != null) {
+                content = title +
+                    "<p class='card-text'>" +
+                    textContent +
+                    "</p>";
+                body = true;
+            } else {
+                //IF THERE IS NO TITLE OR CONTENT IN THE NOTE, THE CARD HAS NO BODY
+                if (title != "" && title != null) {
+                    content = title;
+                    body = true;
+                } else {
+                    content = "";
+                    body = false;
+                }
+            }
+        }
+
+
+        if ("labels" in data) {
+            preLabels = data.labels;
+            for (var name in preLabels) {
+                var obj = preLabels[name];
+                for (var prop in obj) {
+                    labels += "<span class='badge badge-dark text-white'>" + obj[prop] + "</span>";
+                }
+            }
+        }
+
+        if ("sharees" in data) {
+            people = data.sharees;
+
+            for (var index in people) {
+                var obj = people[index];
+                var isOwner = obj.isOwner; //needs treatment
+                var type = obj.type; //needs treatment
+                sharees += "<span class='badge badge-light'><img src='resources/img/person.png' width='15px'>" + obj.email + "</span>";
+            }
+        }
+
+
+
+        if ("annotations" in data) {
+            var annotations = data.annotations;
+
+            for (var index in annotations) {
+                var obj = annotations[index];
+                var description = obj.description;
+                var source = obj.source; //needs treatment
+                var title = obj.title; 
+                var url = obj.url;
+                links += "<div class='card "+color+"'><a class='mb-3' href='"+obj.url+"'><li class='list-group-item bg-light'><strong>" + title + "</strong><p class='text-muted'>"+description+"</p></li></a></div>";
+            }
+
+        }
+
+        if (body == true) {
+            content = "<div class='card-body'>" + content + records + links + "</div>";
+        } else {
+            content = "";
+        }
+
+        note = "<div class='card " + color + " lazy t-2'>" +
+            images +
+            content +
+            "<div class='card-footer p-1 text-center'>" +
+            "<div class='labels'>" +
+            labels +
+            "</div>" +
+            "<div class='sharees mt-1'>" +
+            sharees +
+            "</div>" +
+            "<div><p class='card-text  text-center'><small class='text-muted'> Edited:&nbsp;&nbsp;" + formatTS(userEditedTimestampUsec) + "</small></p></div>" +
+            "</div>" +
+            "</div>";
+
+        $(".card-columns").lazy().append(note);
+
+
     }
 </script>
 
