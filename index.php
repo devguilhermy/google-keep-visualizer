@@ -161,7 +161,7 @@ if ($handle = opendir('Takeout/Keep')) {
 
     var qtFiles = files.lenght;
     var counter = 0;
-    var ordenator = [];
+    var arrayNotes = [];
 
     function loadJSON(file) {
         var url = dir + file;
@@ -170,9 +170,10 @@ if ($handle = opendir('Takeout/Keep')) {
 
 
             if (counter == files.length - 1) {
-                ordenator[counter] = data;
+                arrayNotes[counter] = data;
 
-                ordenator.sort(function(a, b) {
+                //SORTS THE NOTES BY LAST EDITED DATE
+                arrayNotes.sort(function(a, b) {
                     return b.userEditedTimestampUsec - a.userEditedTimestampUsec;
                 });
 
