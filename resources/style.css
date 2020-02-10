@@ -292,21 +292,5 @@ hr {
   }
 }
 
-.card-footer {
-  display: none;
-  justify-content: space-between;
-}
-
-.card:hover .card-footer {
-  display: block;
-  transition: ease-in-out .1s;
-}
-
-.labels {
-  
-  justify-content: space-evenly;
-  display: flex;
-}
-
 
 

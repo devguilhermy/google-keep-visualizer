@@ -1,4 +1,4 @@
-function convertTS(unixtimestamp) {
+function formatTS(unixtimestamp) {
 
     // Months array
     var months_arr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
