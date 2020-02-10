@@ -23,27 +23,6 @@ if ($handle = opendir('Takeout/Keep')) {
     <link rel="stylesheet" href="resources/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="resources/grid.css">
     <style>
-        @media screen and (min-width: 1200px) {
-            .bricklayer-column-sizer {
-                /* divide by 3. */
-                width: 25%;
-            }
-        }
-
-        @media screen and (min-width: 956px) {
-            .bricklayer-column-sizer {
-                /* divide by 2. */
-                width: 33.3%;
-            }
-        }
-
-        @media screen and (min-width: 768px) {
-            .bricklayer-column-sizer {
-                /* divide by 2. */
-                width: 50%;
-            }
-        }
-
         .grid-sizer,
         .grid-item {
             width: 22%;
@@ -129,6 +108,26 @@ if ($handle = opendir('Takeout/Keep')) {
         .morelink {
             display: block;
         }
+
+        .card-footer {
+  justify-content: space-between;
+}
+
+/*.card:hover .card-footer {
+  display: block;
+  transition: ease-in-out .1s;
+}*/
+
+.labels {
+  justify-content: space-evenly;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card p {
+    margin-bottom: 0px !important;
+}
+
     </style>
 </head>
 
@@ -174,6 +173,8 @@ if ($handle = opendir('Takeout/Keep')) {
             $(tag).attr("src", url + newFilename);
             //The paramater onError is change so that if the file in src is not found again, it replace it with an generic image
             $(tag).attr("onError", "fileError(this)");
+        } else {
+            fileError(tag);
         }
     }
 
@@ -337,7 +338,7 @@ if ($handle = opendir('Takeout/Keep')) {
                 var source = obj.source; //needs treatment
                 var title = obj.title;
                 var url = obj.url;
-                links += "<div class='card " + color + "'><a class='mb-3' href='" + obj.url + "'><li class='list-group-item bg-light'><strong>" + title + "</strong><p class='text-muted'>" + description + "</p></li></a></div>";
+                links += "<div class='card " + color + "'><a class='mb-3' href='" + obj.url + "'><li class='list-group-item bg-light'><strong>" + title + "</strong><p class='text-muted'>" + obj.url + "</p></li></a></div>";
             }
 
         }
