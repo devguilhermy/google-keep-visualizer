@@ -128,19 +128,25 @@ if ($handle = opendir('Takeout/Keep')) {
     margin-bottom: 0px !important;
 }
 
+
+/* fluid 5 columns */
+.grid-sizer,
+.grid-item { width: 20%; max-height: 500px; }
     </style>
 </head>
 
 <body>
     <div class="card-columns m-2" id="pinned-notes">
     </div>
-    <div class="card-columns m-2" id="regular-notes">
+    <div class="grid m-2" id="regular-notes">
+    <div class="grid-sizer"></div>
     </div>
 </body>
 <script src="resources/jquery-3.4.1.min.js"></script>
 <script src="resources/jquery.lazy-master/jquery.lazy.min.js"></script>
 <script src="resources/bootstrap/js/bootstrap.min.js"></script>
 <script src="resources/script.js"></script>
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
 <script type="text/javascript">
     var dir = "Takeout/Keep/";
 
@@ -210,6 +216,14 @@ if ($handle = opendir('Takeout/Keep')) {
                 });
 
                 arrayNotes.forEach(loadNote);
+
+                $('.grid').masonry({
+                    // options
+                    itemSelector: '.grid-item',
+                    horizontalOrder: true,
+                    gutter: 5,
+                    fitWidth: true
+                });
             } else {
                 arrayNotes[counter] = data;
                 counter++;
@@ -294,7 +308,7 @@ if ($handle = opendir('Takeout/Keep')) {
                     "</p>";
                 body = true;
             } else {
-                //IF THERE IS NO TITLE OR CONTENT IN THE NOTE, THE CARD HAS NO BODY
+                //IF THERE IS NO TITLE OR CONTENT IN THE NOTE, THE CARD WILL HAVE NO BODY
                 if (title != "" && title != null) {
                     content = title;
                     body = true;
@@ -341,27 +355,12 @@ if ($handle = opendir('Takeout/Keep')) {
                 links += "<div class='card " + color + "'><a class='mb-3' href='" + obj.url + "'><li class='list-group-item bg-light'><strong>" + title + "</strong><p class='text-muted'>" + obj.url + "</p></li></a></div>";
             }
 
+            body = true;
+
         }
 
-        if (body == true) {
-            content = "<div class='card-body'><div class='text more'>" + content + "</div>" + records + links + "</div>";
-        } else {
-            content = "";
-        }
+        note = buildNote(body, color, images, content, records, links, labels, sharees, userEditedTimestampUsec);
 
-        note = "<div class='card " + color + " lazy t-2'>" +
-            images +
-            content +
-            "<div class='card-footer p-1 text-center'>" +
-            "<div class='labels'>" +
-            labels +
-            "</div>" +
-            "<div class='sharees mt-1'>" +
-            sharees +
-            "</div>" +
-            "<div><p class='card-text  text-center'><small class='text-muted'> Edited:&nbsp;&nbsp;" + formatTS(userEditedTimestampUsec) + "</small></p></div>" +
-            "</div>" +
-            "</div>";
 
         //if (isPinned == true) {
         //    $("#pinned-notes").append(note);
@@ -371,6 +370,66 @@ if ($handle = opendir('Takeout/Keep')) {
 
 
     }
+
+    function buildNote(body, color, images, content, records, links, labels, sharees, timestamp){
+        var note = "";
+        var main = "";
+        var footer = "";
+
+        var sectionRecords = "";
+        var sectionLinks = "";
+        var sectionSharees = "";
+        var sectionLabels = "";
+        var sectionTimestamp = "";
+
+        if(records != ""){
+            sectionRecords = "<div class='records mt-1'>" + records + "</div>";
+        }
+
+        if(links != ""){
+            sectionLinks = "<div class='links mt-1'>" + links + "</div>";
+        }
+
+        if(sharees != ""){
+            sectionSharees = "<div class='sharees mt-1'>" + sharees + "</div>";
+        }
+
+        if(labels != ""){
+            sectionLabels = "<div class='labels mt-1'>" + labels + "</div>";
+        }
+
+        sectionTimestamp = "<div class='timestamp'><p class='card-text  text-center'><small class='text-muted'> Edited:&nbsp;&nbsp;" + formatTS(timestamp) + "</small></p></div>";
+
+        
+        if (body == true) {
+            main = "<div class='card-body'>"+
+                        "<div class='text'>" + 
+                            content + 
+                        "</div>" +
+                        sectionRecords +
+                        sectionLinks +
+                    "</div>";
+        } else {
+            main = "";
+        }
+
+        footer = "<div class='card-footer p-1 text-center'>" +
+            sectionLabels +
+            sectionSharees +
+            sectionTimestamp +
+            "</div>";
+        
+         note = "<div class='grid-item'><div class='card " + color + "'>" +
+            images +
+            main +
+            footer +
+            "</div></div>";
+
+        return note;
+        
+    }
+
+    
 </script>
 
 </html>
