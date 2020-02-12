@@ -1,6 +1,6 @@
 # <h1>Google Keep Visualizer</h1>
 
-A tool to visualize Google Keep notes exported via Takeout, instead of having to open each .html to see the notes, the script will read the .json files of each note and and generate a grid with their content. You could host an website with the script and the notes, and give access to your whoever you want.
+A tool to visualize Google Keep notes exported via Takeout. Instead of having to open each .html to see the notes, the script will read the .json files of each note for you and and generate a grid with their content. You could host an website with the script and the notes, and give access to your whoever you want.
 
 <h3> Instructions </h3>
 <hr>
