@@ -21,22 +21,8 @@ if ($handle = opendir('Takeout/Keep')) {
     <title>Document</title>
     <link rel="stylesheet" href="resources/style.css">
     <link rel="stylesheet" href="resources/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="resources/grid.css">
+    <link rel="stylesheet" href="resources/colors.css">
     <style>
-        .grid-sizer,
-        .grid-item {
-            width: 22%;
-        }
-
-        .gutter-sizer {
-            width: 4%;
-        }
-
-        /*!
- * Start Bootstrap - Simple Sidebar (https://startbootstrap.com/template-overviews/simple-sidebar)
- * Copyright 2013-2019 Start Bootstrap
- * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-simple-sidebar/blob/master/LICENSE)
- */
         body {
             overflow-x: hidden;
         }
@@ -110,36 +96,98 @@ if ($handle = opendir('Takeout/Keep')) {
         }
 
         .card-footer {
-  justify-content: space-between;
-}
+            justify-content: space-between;
+        }
 
-/*.card:hover .card-footer {
+        /*.card:hover .card-footer {
   display: block;
   transition: ease-in-out .1s;
 }*/
 
-.labels {
-  justify-content: space-evenly;
-  display: flex;
-  flex-wrap: wrap;
-}
+        .labels {
+            justify-content: space-evenly;
+            display: flex;
+            flex-wrap: wrap;
+        }
 
-.card p {
-    margin-bottom: 0px !important;
-}
+        .card p {
+            margin-bottom: 0px !important;
+        }
+
+        .breadcrumb {
+
+            padding: .50rem 1rem !important;
+            margin-bottom: 0rem !important;
+        }
+
+        #labels-list {
+
+            text-align: center !important;
+        }
+
+        .body {
+            background-color: #202124;
+        }
 
 
-/* fluid 5 columns */
-.grid-sizer,
-.grid-item { width: 20%; max-height: 500px; }
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .breadcrumb {
+            justify-content: center;
+        }
+
+        hr {
+
+            margin-top: .5rem;
+            margin-bottom: .5rem;
+        }
     </style>
 </head>
 
 <body>
-    <div class="card-columns m-2" id="pinned-notes">
-    </div>
-    <div class="grid m-2" id="regular-notes">
-    <div class="grid-sizer"></div>
+    <div class="d-flex" id="wrapper">
+
+        <!-- Sidebar -->
+        <div class="sidebar bg-light border-right" id="sidebar-wrapper">
+            <div class="sidebar-heading">Notes</div>
+            <div class="list-group list-group-flush" id="labels-list">
+            </div>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <button class="btn btn-primary" id="menu-toggle">Labels</button>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto mt-2 mt-lg-0 text-center">
+                        <li class="nav-item">
+                            <button class="btn btn-light" onclick="darkenize()" id="arroz" href="#"><img src="resources/img/theme.png" style="width: 24px"></button>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="mt-4 pl-4"><strong>PINNED NOTES</strong></div>
+            <hr>
+            <div class="card-columns m-4" id="pinned-notes">
+            </div>
+            <div class="mt-4 pl-4"><strong>REGULAR NOTES</strong></div>
+            <hr>
+            <div class="card-columns m-4" id="regular-notes">
+            </div>
+            <div class="mt-4 pl-4"><strong>ARCHIVED NOTES</strong></div>
+            <hr>
+            <div class="card-columns m-4" id="archived-notes">
+            </div>
+        </div>
+
     </div>
 </body>
 <script src="resources/jquery-3.4.1.min.js"></script>
@@ -148,6 +196,30 @@ if ($handle = opendir('Takeout/Keep')) {
 <script src="resources/script.js"></script>
 <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
 <script type="text/javascript">
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+
+    function darkenize() {
+        $("link[href='resources/colors.css']").attr("href", "resources/colors2.css")
+        $(".navbar").removeClass("navbar-light");
+        $(".navbar").removeClass("bg-light");
+        $(".navbar").addClass("bg-dark");
+        $(".navbar").addClass("nav-dark");
+        $("#arroz").attr("onclick", "luminaze()");
+    }
+
+    function luminaze() {
+
+        $("link[href='resources/colors2.css']").attr("href", "resources/colors.css")
+        $(".navbar").removeClass("navbar-dark");
+        $(".navbar").removeClass("bg-dark");
+        $(".navbar").addClass("bg-link");
+        $(".navbar").addClass("navbar-light");
+        $("#arroz").attr("onclick", "darkenize()");
+    }
+
     var dir = "Takeout/Keep/";
 
     $(document).ready(function() {
@@ -159,8 +231,10 @@ if ($handle = opendir('Takeout/Keep')) {
 
 
         $('.more').each(function() {
-            var arroz = $(this).innerText();
-            alert(arroz.lenght);
+            var content = $(this).text();
+            if(content.length > showChar){
+                alert($(this).text());
+            }
 
         });
     });
@@ -188,15 +262,34 @@ if ($handle = opendir('Takeout/Keep')) {
         $(tag).attr("src", "https://image.freepik.com/free-vector/error-404-found-glitch-effect_8024-4.jpg");
     }
 
-    var files = <?php echo json_encode($arrayFiles) ?>;
-    files.forEach(loadJSON);
+    function createNotes(array) {
+        //SORTS THE NOTES BY LAST EDITED DATE
+        array.sort(function(a, b) {
+            return b.userEditedTimestampUsec - a.userEditedTimestampUsec;
+        });
 
-    var qtFiles = files.lenght;
-    var counter = 0;
-    var arrayNotes = [];
-    var pinned = [];
-    var archived = [];
-    var trashed = [];
+        array.forEach(loadNote);
+
+        labSort.forEach(createLabel);
+        $("#label-counter").text(labels.length);
+    }
+
+    function createLabel(label) {
+        $("#labels-list").append("<a href='&l=" + label + "' class='list-group-item list-group-item-action bg-light pl-2'>" + label + "</a>")
+    }
+
+    var files = <?php echo json_encode($arrayFiles) ?>;
+        files.forEach(loadJSON);
+        $("#note-counter").text(files.length);
+
+
+        var qtFiles = files.lenght;
+        var counter = 0;
+        var arrayNotes = [];
+        var pinned = [];
+        var archived = [];
+        var trashed = [];
+        var labSort = [];
 
     function loadJSON(file) {
         var url = dir + file;
@@ -210,20 +303,7 @@ if ($handle = opendir('Takeout/Keep')) {
             if (counter == files.length - 1) {
                 arrayNotes[counter] = data;
 
-                //SORTS THE NOTES BY LAST EDITED DATE
-                arrayNotes.sort(function(a, b) {
-                    return b.userEditedTimestampUsec - a.userEditedTimestampUsec;
-                });
-
-                arrayNotes.forEach(loadNote);
-
-                $('.grid').masonry({
-                    // options
-                    itemSelector: '.grid-item',
-                    horizontalOrder: true,
-                    gutter: 5,
-                    fitWidth: true
-                });
+                createNotes(arrayNotes);
             } else {
                 arrayNotes[counter] = data;
                 counter++;
@@ -322,10 +402,15 @@ if ($handle = opendir('Takeout/Keep')) {
 
         if ("labels" in data) {
             preLabels = data.labels;
-            for (var name in preLabels) {
-                var obj = preLabels[name];
+            for (var label in preLabels) {
+                var obj = preLabels[label];
                 for (var prop in obj) {
                     labels += "<span class='badge badge-dark text-white'>" + obj[prop] + "</span>";
+                }
+
+                if (!labSort.includes(obj[prop])) {
+                    labSort.push(obj[prop]);
+                    labSort.sort();
                 }
             }
         }
@@ -352,7 +437,7 @@ if ($handle = opendir('Takeout/Keep')) {
                 var source = obj.source; //needs treatment
                 var title = obj.title;
                 var url = obj.url;
-                links += "<div class='card " + color + "'><a class='mb-3' href='" + obj.url + "'><li class='list-group-item bg-light'><strong>" + title + "</strong><p class='text-muted'>" + obj.url + "</p></li></a></div>";
+                links += "<div class='mb-1'><a class='mb-3' href='" + obj.url + "'><li class='list-group-item annotation'><img src='resources/img/web.png' style='width: 15px'>&nbsp;<strong>" + title + "</strong></li></a></div>";
             }
 
             body = true;
@@ -360,18 +445,24 @@ if ($handle = opendir('Takeout/Keep')) {
         }
 
         note = buildNote(body, color, images, content, records, links, labels, sharees, userEditedTimestampUsec);
+        //NOW YOU HAVE A NOTE WITH TEMPLATE AND CONTENT, TO BE MANAGED AS YOU LIKE
 
-
-        //if (isPinned == true) {
-        //    $("#pinned-notes").append(note);
-        //} else {
-        $("#regular-notes").append(note);
-        //}
-
+        //no printing docs 
+        if (!labels.includes("Docs")) { // REMOVE LINE
+            if (isPinned == true) {
+                $("#pinned-notes").append(note);
+            } else if (isArchived == true) {
+                $("#archived-notes").append(note);
+            } else if (isTrashed == true) {
+                //add code if you want to show trashed notes
+            } else {
+                $("#regular-notes").append(note);
+            }
+        }
 
     }
 
-    function buildNote(body, color, images, content, records, links, labels, sharees, timestamp){
+    function buildNote(body, color, images, content, records, links, labels, sharees, timestamp) {
         var note = "";
         var main = "";
         var footer = "";
@@ -382,33 +473,33 @@ if ($handle = opendir('Takeout/Keep')) {
         var sectionLabels = "";
         var sectionTimestamp = "";
 
-        if(records != ""){
+        if (records != "") {
             sectionRecords = "<div class='records mt-1'>" + records + "</div>";
         }
 
-        if(links != ""){
-            sectionLinks = "<div class='links mt-1'>" + links + "</div>";
+        if (links != "") {
+            sectionLinks = "<div class='links pt-3'>" + links + "</div>";
         }
 
-        if(sharees != ""){
+        if (sharees != "") {
             sectionSharees = "<div class='sharees mt-1'>" + sharees + "</div>";
         }
 
-        if(labels != ""){
+        if (labels != "") {
             sectionLabels = "<div class='labels mt-1'>" + labels + "</div>";
         }
 
         sectionTimestamp = "<div class='timestamp'><p class='card-text  text-center'><small class='text-muted'> Edited:&nbsp;&nbsp;" + formatTS(timestamp) + "</small></p></div>";
 
-        
+
         if (body == true) {
-            main = "<div class='card-body'>"+
-                        "<div class='text'>" + 
-                            content + 
-                        "</div>" +
-                        sectionRecords +
-                        sectionLinks +
-                    "</div>";
+            main = "<div class='card-body'>" +
+                "<div class='text'>" +
+                content +
+                "</div>" +
+                sectionRecords +
+                sectionLinks +
+                "</div>";
         } else {
             main = "";
         }
@@ -418,18 +509,16 @@ if ($handle = opendir('Takeout/Keep')) {
             sectionSharees +
             sectionTimestamp +
             "</div>";
-        
-         note = "<div class='grid-item'><div class='card " + color + "'>" +
+
+        note = "<div class='grid-item'><div class='card " + color + "'>" +
             images +
             main +
             footer +
             "</div></div>";
 
         return note;
-        
-    }
 
-    
+    }
 </script>
 
 </html>
