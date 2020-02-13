@@ -202,7 +202,7 @@ if ($handle = opendir('Takeout/Keep')) {
     });
 
     function darkenize() {
-        $("link[href='resources/colors.css']").attr("href", "resources/dark-colors.css")
+        $("link[href='resources/light-colors.css']").attr("href", "resources/dark-colors.css")
         $(".navbar").removeClass("navbar-light");
         $(".navbar").removeClass("bg-light");
         $(".navbar").addClass("bg-dark");
@@ -212,7 +212,7 @@ if ($handle = opendir('Takeout/Keep')) {
 
     function luminaze() {
 
-        $("link[href='resources/colors2.css']").attr("href", "resources/light-colors.css")
+        $("link[href='resources/dark-colors.css']").attr("href", "resources/light-colors.css")
         $(".navbar").removeClass("navbar-dark");
         $(".navbar").removeClass("bg-dark");
         $(".navbar").addClass("bg-link");

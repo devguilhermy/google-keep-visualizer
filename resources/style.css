@@ -226,40 +226,16 @@ hr {
   text-decoration: line-through;
 }
 
-.RED {
-  background-color: rgb(255, 109, 63) !important;
-}
-.ORANGE {
-  background-color: rgb(255, 155, 0) !important;
-}
-.YELLOW {
-  background-color: rgb(255, 218, 0) !important;
-}
-.GREEN {
-  background-color: rgb(149, 214, 65) !important;
-}
-.TEAL {
-  background-color: rgb(28, 232, 181) !important;
-}
-.BLUE {
-  background-color: rgb(63, 195, 255) !important;
-}
-.GRAY {
-  background-color: rgb(184, 196, 201) !important;
+@media (min-width: 300px){
+  .card-columns {
+    column-count: 2 !important;
+  }
 }
 
-/* go/keep-more-colors-eng */
-.CERULEAN {
-  background-color: rgb(130, 177, 255) !important;
-}
-.PURPLE {
-  background-color: rgb(179, 136, 255) !important;
-}
-.PINK {
-  background-color: rgb(248, 187, 208) !important;
-}
-.BROWN {
-  background-color: rgb(215, 204, 200) !important;
+@media (min-width: 750px){
+  .card-columns {
+    column-count: 3 !important;
+  }
 }
 
 @media (min-width: 992px){
