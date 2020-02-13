@@ -21,7 +21,7 @@ if ($handle = opendir('Takeout/Keep')) {
     <title>Document</title>
     <link rel="stylesheet" href="resources/style.css">
     <link rel="stylesheet" href="resources/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="resources/colors.css">
+    <link rel="stylesheet" href="resources/light-colors.css">
     <style>
         body {
             overflow-x: hidden;
@@ -202,7 +202,7 @@ if ($handle = opendir('Takeout/Keep')) {
     });
 
     function darkenize() {
-        $("link[href='resources/colors.css']").attr("href", "resources/colors2.css")
+        $("link[href='resources/colors.css']").attr("href", "resources/dark-colors.css")
         $(".navbar").removeClass("navbar-light");
         $(".navbar").removeClass("bg-light");
         $(".navbar").addClass("bg-dark");
@@ -212,7 +212,7 @@ if ($handle = opendir('Takeout/Keep')) {
 
     function luminaze() {
 
-        $("link[href='resources/colors2.css']").attr("href", "resources/colors.css")
+        $("link[href='resources/colors2.css']").attr("href", "resources/light-colors.css")
         $(".navbar").removeClass("navbar-dark");
         $(".navbar").removeClass("bg-dark");
         $(".navbar").addClass("bg-link");

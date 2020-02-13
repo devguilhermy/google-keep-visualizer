@@ -1,0 +1,72 @@
+body {
+
+  background-color: #202124 !important;
+}
+
+.sidebar {
+  
+  background-color: #202124 !important;
+  color: #e8eaed !important;
+}
+.nav-dark{
+  background-color: #202124 !important;
+}
+.DEFAULT {
+  background-color: #202124 !important;
+  border-color: #5f6368 !important;
+} 
+
+.annotation {
+  background-color: #202124 !important;
+}
+
+.RED {
+    background-color: #5c2b29 !important;
+  }
+  .ORANGE {
+    background-color: #614a19 !important;
+  }
+  .YELLOW {
+    background-color: #635d19 !important;
+  }
+  .GREEN {
+    background-color: #345920 !important;
+  }
+  .TEAL {
+    background-color: #16504b !important;
+  }
+  .BLUE {
+    background-color: #1e3a5f !important;
+  }
+  .GRAY {
+    background-color: #3c3f43 !important;
+  }
+  
+  /* go/keep-more-colors-eng */
+  .CERULEAN {
+    background-color: #2d555e !important;
+  }
+  .PURPLE {
+    background-color: #42275e !important;
+  }
+  .PINK {
+    background-color: #5b2245 !important;
+  }
+  .BROWN {
+    background-color: #442f19 !important;
+  }
+
+  .card {
+    color: #e8eaed;
+  }
+
+ 
+  .sidebar .list-group-item {
+    
+    background-color: #202124 !important;
+    color: #e8eaed !important;
+  }
+
+  .sidebar .list-group-item:hover {
+    color: #202124 !important;
+  }
