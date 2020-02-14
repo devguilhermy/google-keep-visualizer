@@ -69,7 +69,8 @@ if ($handle = opendir('Takeout/Keep')) {
         }
 
         .card {
-
+            max-height: 700px;
+            overflow: hidden;
             word-break: break-word;
         }
 
@@ -174,20 +175,32 @@ if ($handle = opendir('Takeout/Keep')) {
                     </ul>
                 </div>
             </nav>
-            <div class="mt-4 pl-4"><strong>PINNED NOTES</strong></div>
+            <div class="mt-4 pl-4 light-dark"><strong>PINNED NOTES</strong></div>
             <hr>
+
             <div class="card-columns m-4" id="pinned-notes">
+                <div class="spinner-border loading" role="status">
+                    <span class="sr-only">Loading...</span>
+                    Loading
+                </div>
             </div>
-            <div class="mt-4 pl-4"><strong>REGULAR NOTES</strong></div>
+            <div class="mt-4 pl-4 light-dark"><strong>REGULAR NOTES</strong></div>
             <hr>
             <div class="card-columns m-4" id="regular-notes">
+                <div class="spinner-grow loading" role="status">
+                    <span class="sr-only">Loading...</span>
+                    Loading
+                </div>
             </div>
-            <div class="mt-4 pl-4"><strong>ARCHIVED NOTES</strong></div>
+            <div class="mt-4 pl-4 light-dark"><strong>ARCHIVED NOTES</strong></div>
             <hr>
             <div class="card-columns m-4" id="archived-notes">
+                <div class="spinner-grow loading" role="status">
+                    <span class="sr-only">Loading...</span>
+                    Loading
+                </div>
             </div>
         </div>
-
     </div>
 </body>
 <script src="resources/jquery-3.4.1.min.js"></script>
@@ -232,7 +245,7 @@ if ($handle = opendir('Takeout/Keep')) {
 
         $('.more').each(function() {
             var content = $(this).text();
-            if(content.length > showChar){
+            if (content.length > showChar) {
                 alert($(this).text());
             }
 
@@ -272,6 +285,7 @@ if ($handle = opendir('Takeout/Keep')) {
 
         labSort.forEach(createLabel);
         $("#label-counter").text(labels.length);
+        $(".loading").remove();
     }
 
     function createLabel(label) {
@@ -279,17 +293,17 @@ if ($handle = opendir('Takeout/Keep')) {
     }
 
     var files = <?php echo json_encode($arrayFiles) ?>;
-        files.forEach(loadJSON);
-        $("#note-counter").text(files.length);
+    files.forEach(loadJSON);
+    $("#note-counter").text(files.length);
 
 
-        var qtFiles = files.lenght;
-        var counter = 0;
-        var arrayNotes = [];
-        var pinned = [];
-        var archived = [];
-        var trashed = [];
-        var labSort = [];
+    var qtFiles = files.lenght;
+    var counter = 0;
+    var arrayNotes = [];
+    var pinned = [];
+    var archived = [];
+    var trashed = [];
+    var labSort = [];
 
     function loadJSON(file) {
         var url = dir + file;
