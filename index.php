@@ -179,7 +179,7 @@ if ($handle = opendir('Takeout/Keep')) {
             <hr>
 
             <div class="card-columns m-4" id="pinned-notes">
-                <div class="spinner-border loading" role="status">
+                <div class="spinner-grow loading" role="status">
                     <span class="sr-only">Loading...</span>
                     Loading
                 </div>
@@ -220,10 +220,10 @@ if ($handle = opendir('Takeout/Keep')) {
         $(".navbar").removeClass("bg-light");
         $(".navbar").addClass("bg-dark");
         $(".navbar").addClass("nav-dark");
-        $("#arroz").attr("onclick", "luminaze()");
+        $("#arroz").attr("onclick", "lightenize()");
     }
 
-    function luminaze() {
+    function lightenize() {
 
         $("link[href='resources/dark-colors.css']").attr("href", "resources/light-colors.css")
         $(".navbar").removeClass("navbar-dark");
@@ -282,14 +282,16 @@ if ($handle = opendir('Takeout/Keep')) {
         });
 
         array.forEach(loadNote);
+        $(".loading").remove();
+
+        arNotes(array);
 
         labSort.forEach(createLabel);
-        $("#label-counter").text(labels.length);
-        $(".loading").remove();
+        //$("#label-counter").text(labels.length);
     }
 
     function createLabel(label) {
-        $("#labels-list").append("<a href='&l=" + label + "' class='list-group-item list-group-item-action bg-light pl-2'>" + label + "</a>")
+        $("#labels-list").append(`<a href="#" onclick="notesLabel('` + label + `')" class='list-group-item list-group-item-action bg-light pl-2'>` + label + `</a>`);
     }
 
     var files = <?php echo json_encode($arrayFiles) ?>;
@@ -318,6 +320,7 @@ if ($handle = opendir('Takeout/Keep')) {
                 arrayNotes[counter] = data;
 
                 createNotes(arrayNotes);
+                arNotes(arrayNotes);
             } else {
                 arrayNotes[counter] = data;
                 counter++;
@@ -325,6 +328,39 @@ if ($handle = opendir('Takeout/Keep')) {
 
         });
 
+    }
+
+    function arNotes(notes) {
+        if (notes != null) {
+            $.ajax({
+                url: 'arrayNotes.php',
+                data: {
+                    array: notes
+                },
+                dataType: 'txt',
+                success: function(data) {
+                    alert(data)
+                },
+                type: 'GET'
+            });
+        } else {
+            console.log(notes)
+            $.getJSON("notes.json", function(data) {
+                return data;
+            });
+        }
+    }
+
+
+
+    function notesLabel(label) {
+        $("#pinned-notes").empty();
+        $("#regular-notes").empty();
+        $("#archived-notes").empty();
+
+        var arrayNotes = arNotes(null);
+
+        console.log(arrayNotes)
     }
 
 
