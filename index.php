@@ -235,23 +235,6 @@ if ($handle = opendir('Takeout/Keep')) {
 
     var dir = "Takeout/Keep/";
 
-    $(document).ready(function() {
-        // Configure/customize these variables.
-        var showChar = 200; // How many characters are shown by default
-        var ellipsestext = "...";
-        var moretext = "Show more >";
-        var lesstext = "Show less";
-
-
-        $('.more').each(function() {
-            var content = $(this).text();
-            if (content.length > showChar) {
-                alert($(this).text());
-            }
-
-        });
-    });
-
     //Solution for the JSON note incorrectly listing JPG attachments as JPEG
     //WHEN THE IMAGE FILE CAN NOT BE FOUND IN THE LOOP, THIS FUNCTION REPLACES THE EXTENSION NAME
     function imgError(tag, file) {
@@ -284,10 +267,8 @@ if ($handle = opendir('Takeout/Keep')) {
         array.forEach(loadNote);
         $(".loading").remove();
 
-        arNotes(array);
-
-        labSort.forEach(createLabel);
-        //$("#label-counter").text(labels.length);
+        writeArray(array);
+        arrayLabels.forEach(createLabel);
     }
 
     function createLabel(label) {
@@ -305,7 +286,7 @@ if ($handle = opendir('Takeout/Keep')) {
     var pinned = [];
     var archived = [];
     var trashed = [];
-    var labSort = [];
+    var arrayLabels = [];
 
     function loadJSON(file) {
         var url = dir + file;
@@ -320,7 +301,6 @@ if ($handle = opendir('Takeout/Keep')) {
                 arrayNotes[counter] = data;
 
                 createNotes(arrayNotes);
-                arNotes(arrayNotes);
             } else {
                 arrayNotes[counter] = data;
                 counter++;
@@ -330,37 +310,45 @@ if ($handle = opendir('Takeout/Keep')) {
 
     }
 
-    function arNotes(notes) {
-        if (notes != null) {
-            $.ajax({
-                url: 'arrayNotes.php',
-                data: {
-                    array: notes
-                },
-                dataType: 'txt',
-                success: function(data) {
-                    alert(data)
-                },
-                type: 'GET'
-            });
-        } else {
-            console.log(notes)
-            $.getJSON("notes.json", function(data) {
-                return data;
-            });
-        }
+    function writeArray(notes) {
+        $.ajax({
+            url: "writeArray.php",
+            data: {
+                array: notes
+            },
+            type: "POST"
+        });
     }
 
+    function readArray(){
+        $.getJSON("notes.json", function(data) {
+            return data;
+        });
+    }
 
+    function test() {
+         return readArray();
+    }
 
     function notesLabel(label) {
         $("#pinned-notes").empty();
         $("#regular-notes").empty();
         $("#archived-notes").empty();
 
-        var arrayNotes = arNotes(null);
+        var arrayNotes = [];
 
+        arrayNotes = test();
         console.log(arrayNotes)
+
+        arrayNotes.forEach(function(notee) {
+            var note = JSON.parse(notee);
+            if (typeof note.labels !== 'undefined') {
+                if (note.labels.includes(label)) {
+                    console.log(note);
+                    loadNote(note);
+                }
+            }
+        });
     }
 
 
@@ -458,9 +446,9 @@ if ($handle = opendir('Takeout/Keep')) {
                     labels += "<span class='badge badge-dark text-white'>" + obj[prop] + "</span>";
                 }
 
-                if (!labSort.includes(obj[prop])) {
-                    labSort.push(obj[prop]);
-                    labSort.sort();
+                if (!arrayLabels.includes(obj[prop])) {
+                    arrayLabels.push(obj[prop]);
+                    arrayLabels.sort();
                 }
             }
         }
@@ -517,6 +505,7 @@ if ($handle = opendir('Takeout/Keep')) {
         var main = "";
         var footer = "";
 
+        var sectionText = content;
         var sectionRecords = "";
         var sectionLinks = "";
         var sectionSharees = "";
@@ -545,7 +534,7 @@ if ($handle = opendir('Takeout/Keep')) {
         if (body == true) {
             main = "<div class='card-body'>" +
                 "<div class='text'>" +
-                content +
+                sectionText +
                 "</div>" +
                 sectionRecords +
                 sectionLinks +
