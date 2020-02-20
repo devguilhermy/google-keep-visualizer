@@ -22,6 +22,7 @@ if ($handle = opendir('Takeout/Keep')) {
     <link rel="stylesheet" href="resources/style.css">
     <link rel="stylesheet" href="resources/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="resources/light-colors.css">
+    <script src="https://kit.fontawesome.com/03081fa847.js" crossorigin="anonymous"></script>
     <style>
         body {
             overflow-x: hidden;
@@ -47,6 +48,7 @@ if ($handle = opendir('Takeout/Keep')) {
 
         #page-content-wrapper {
             min-width: 100vw;
+            margin-top: 3rem;
         }
 
         #wrapper.toggled #sidebar-wrapper {
@@ -70,7 +72,7 @@ if ($handle = opendir('Takeout/Keep')) {
 
         .card {
             max-height: 700px;
-            overflow: hidden;
+            overflow: scroll;
             word-break: break-word;
         }
 
@@ -84,8 +86,7 @@ if ($handle = opendir('Takeout/Keep')) {
         }
 
         .list-group-item {
-
-            padding: 0.5rem !important;
+            padding: 1rem !important;
         }
 
         .morecontent span {
@@ -121,10 +122,7 @@ if ($handle = opendir('Takeout/Keep')) {
             margin-bottom: 0rem !important;
         }
 
-        #labels-list {
 
-            text-align: center !important;
-        }
 
         .body {
             background-color: #202124;
@@ -144,16 +142,29 @@ if ($handle = opendir('Takeout/Keep')) {
             margin-top: .5rem;
             margin-bottom: .5rem;
         }
+
+        .icon-20 {
+            width: 20px !important;
+        }
+
+        .card::-webkit-scrollbar {
+            width: 0 !important;
+        }
     </style>
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom fixed-top">
+        <button class="navbar-toggler d-inline-block" id="menu-toggle"><i class="fas fa-bars"></i></button>
+    </nav>
     <div class="d-flex" id="wrapper">
 
         <!-- Sidebar -->
-        <div class="sidebar bg-light border-right" id="sidebar-wrapper">
-            <div class="sidebar-heading">Notes</div>
-            <div class="list-group list-group-flush" id="labels-list">
+        <div class="sidebar bg-light" id="sidebar-wrapper">
+            <div class="list-group list-group-flush mt-10" id="labels-list">
+                <a href="#" id="theme-toggler" onclick="darkenize()" class='list-group-item list-group-item-action bg-light border-0'><i class="fas fa-adjust"></i>&nbsp;&nbsp;Switch theme</a>
+                <a href="settings.php" class='list-group-item list-group-item-action bg-light border-0'><i class="fas fa-cog"></i>&nbsp;&nbsp;Settings</a>
+                <a href="#" class='list-group-item list-group-item-action bg-light mt-2 border-0'><strong>Labels</strong></a>
             </div>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -161,53 +172,41 @@ if ($handle = opendir('Takeout/Keep')) {
         <!-- Page Content -->
         <div id="page-content-wrapper">
 
-            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-                <button class="btn btn-primary" id="menu-toggle">Labels</button>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ml-auto mt-2 mt-lg-0 text-center">
-                        <li class="nav-item">
-                            <button class="btn btn-light" onclick="darkenize()" id="arroz" href="#"><img src="resources/img/theme.png" style="width: 24px"></button>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
             <div class="mt-4 pl-4 light-dark"><strong>PINNED NOTES</strong></div>
             <hr>
 
-            <div class="card-columns m-4" id="pinned-notes">
+            <div class="card-columns m-3" id="pinned-notes">
                 <div class="spinner-grow loading" role="status">
                     <span class="sr-only">Loading...</span>
-                    Loading
+                    <i class="fas fa-spinner"></i>&nbsp;Loading
                 </div>
             </div>
             <div class="mt-4 pl-4 light-dark"><strong>REGULAR NOTES</strong></div>
             <hr>
-            <div class="card-columns m-4" id="regular-notes">
+            <div class="card-columns m-3" id="regular-notes">
                 <div class="spinner-grow loading" role="status">
                     <span class="sr-only">Loading...</span>
-                    Loading
+                    <i class="fas fa-spinner"></i>&nbsp;Loading
                 </div>
             </div>
             <div class="mt-4 pl-4 light-dark"><strong>ARCHIVED NOTES</strong></div>
             <hr>
-            <div class="card-columns m-4" id="archived-notes">
+            <div class="card-columns m-3" id="archived-notes">
                 <div class="spinner-grow loading" role="status">
                     <span class="sr-only">Loading...</span>
-                    Loading
+                    <i class="fas fa-spinner"></i>&nbsp;Loading
                 </div>
             </div>
         </div>
     </div>
 </body>
+
 <script src="resources/jquery-3.4.1.min.js"></script>
 <script src="resources/jquery.lazy-master/jquery.lazy.min.js"></script>
 <script src="resources/bootstrap/js/bootstrap.min.js"></script>
 <script src="resources/script.js"></script>
-<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+
 <script type="text/javascript">
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
@@ -216,21 +215,26 @@ if ($handle = opendir('Takeout/Keep')) {
 
     function darkenize() {
         $("link[href='resources/light-colors.css']").attr("href", "resources/dark-colors.css")
-        $(".navbar").removeClass("navbar-light");
-        $(".navbar").removeClass("bg-light");
+        $(".navbar").removeClass("navbar-light bg-light");
+
         $(".navbar").addClass("bg-dark");
         $(".navbar").addClass("nav-dark");
-        $("#arroz").attr("onclick", "lightenize()");
+
+        $("#menu-toggle").attr("style", "background-color: white !important");
+
+        $("#theme-toggler").attr("onclick", "lightenize()");
     }
 
     function lightenize() {
 
         $("link[href='resources/dark-colors.css']").attr("href", "resources/light-colors.css")
-        $(".navbar").removeClass("navbar-dark");
-        $(".navbar").removeClass("bg-dark");
-        $(".navbar").addClass("bg-link");
-        $(".navbar").addClass("navbar-light");
-        $("#arroz").attr("onclick", "darkenize()");
+        $(".navbar").removeClass("navbar-dark bg-dark");
+
+        $(".navbar").addClass("bg-light navbar-light");
+
+        $("#menu-toggle").css("background-color", "");
+
+        $("#theme-toggler").attr("onclick", "darkenize()");
     }
 
     var dir = "Takeout/Keep/";
@@ -272,7 +276,7 @@ if ($handle = opendir('Takeout/Keep')) {
     }
 
     function createLabel(label) {
-        $("#labels-list").append(`<a href="#" onclick="notesLabel('` + label + `')" class='list-group-item list-group-item-action bg-light pl-2'>` + label + `</a>`);
+        $("#labels-list").append(`<a href="#" onclick="notesLabel('` + label + `')" class='list-group-item list-group-item-action bg-light'><i class="fas fa-tag"></i>&nbsp;&nbsp;` + label + `</a>`);
     }
 
     var files = <?php echo json_encode($arrayFiles) ?>;
@@ -313,6 +317,7 @@ if ($handle = opendir('Takeout/Keep')) {
     function writeArray(notes) {
         $.ajax({
             url: "writeArray.php",
+            dataType: "JSON",
             data: {
                 array: notes
             },
@@ -320,35 +325,36 @@ if ($handle = opendir('Takeout/Keep')) {
         });
     }
 
-    function readArray(){
-        $.getJSON("notes.json", function(data) {
-            return data;
-        });
-    }
-
-    function test() {
-         return readArray();
-    }
-
-    function notesLabel(label) {
-        $("#pinned-notes").empty();
-        $("#regular-notes").empty();
-        $("#archived-notes").empty();
-
-        var arrayNotes = [];
-
-        arrayNotes = test();
-        console.log(arrayNotes)
-
-        arrayNotes.forEach(function(notee) {
-            var note = JSON.parse(notee);
+    function carregarNotasEspecificas(label, notas) {
+        notas.forEach(note => {
             if (typeof note.labels !== 'undefined') {
-                if (note.labels.includes(label)) {
+                let labels = note.labels.map(label => label.name)
+                if (labels.includes(label)) {
                     console.log(note);
                     loadNote(note);
                 }
             }
         });
+    }
+
+    function notesLabel(label) {
+        function qualquer_coisa() {
+            return 'arroba'
+        }
+
+        console.log(qualquer_coisa())
+
+        $("#pinned-notes").empty();
+        $("#regular-notes").empty();
+        $("#archived-notes").empty();
+
+        $.getJSON("notes.json", data => {
+            carregarNotasEspecificas(label, data)
+        });
+        // var arrayNotes = [];
+
+        // arrayNotes = readArray();
+        // console.log(arrayNotes)
     }
 
 
@@ -549,11 +555,11 @@ if ($handle = opendir('Takeout/Keep')) {
             sectionTimestamp +
             "</div>";
 
-        note = "<div class='grid-item'><div class='card " + color + "'>" +
+        note = "<div class='grid-item'><div class='card " + color + "'><div class='content'>" +
             images +
             main +
             footer +
-            "</div></div>";
+            "</div></div></div>";
 
         return note;
 
