@@ -70,7 +70,7 @@ if ($handle = opendir('Takeout/Keep')) {
             }
         }
 
-        .card {
+        .content{
             max-height: 700px;
             overflow: scroll;
             word-break: break-word;
@@ -147,9 +147,18 @@ if ($handle = opendir('Takeout/Keep')) {
             width: 20px !important;
         }
 
-        .card::-webkit-scrollbar {
+        .content::-webkit-scrollbar {
             width: 0 !important;
         }
+
+        .side-dark .list-group-item:focus{
+            color: #202124 !important;
+        }
+
+        /* .card:hover .card-footer {
+            visibility: visible !important;
+            transition: visibility 5ms ease-in-out;
+        } */
     </style>
 </head>
 
@@ -217,8 +226,8 @@ if ($handle = opendir('Takeout/Keep')) {
         $("link[href='resources/light-colors.css']").attr("href", "resources/dark-colors.css")
         $(".navbar").removeClass("navbar-light bg-light");
 
-        $(".navbar").addClass("bg-dark");
-        $(".navbar").addClass("nav-dark");
+        $(".navbar").addClass("bg-dark nav-dark");
+        $(".sidebar").addClass("side-dark");
 
         $("#menu-toggle").attr("style", "background-color: white !important");
 
@@ -325,8 +334,8 @@ if ($handle = opendir('Takeout/Keep')) {
         });
     }
 
-    function carregarNotasEspecificas(label, notas) {
-        notas.forEach(note => {
+    function loadLabelNotes(label, notes) {
+        notes.forEach(note => {
             if (typeof note.labels !== 'undefined') {
                 let labels = note.labels.map(label => label.name)
                 if (labels.includes(label)) {
@@ -338,23 +347,13 @@ if ($handle = opendir('Takeout/Keep')) {
     }
 
     function notesLabel(label) {
-        function qualquer_coisa() {
-            return 'arroba'
-        }
-
-        console.log(qualquer_coisa())
-
         $("#pinned-notes").empty();
         $("#regular-notes").empty();
         $("#archived-notes").empty();
 
         $.getJSON("notes.json", data => {
-            carregarNotasEspecificas(label, data)
+            loadLabelNotes(label, data)
         });
-        // var arrayNotes = [];
-
-        // arrayNotes = readArray();
-        // console.log(arrayNotes)
     }
 
 
@@ -492,7 +491,7 @@ if ($handle = opendir('Takeout/Keep')) {
         //NOW YOU HAVE A NOTE WITH TEMPLATE AND CONTENT, TO BE MANAGED AS YOU LIKE
 
         //no printing docs 
-        if (!labels.includes("Docs")) { // REMOVE LINE
+        if (!labels.includes("Docs") && !labels.includes("...... OpenFrontier")) { // REMOVE LINE
             if (isPinned == true) {
                 $("#pinned-notes").append(note);
             } else if (isArchived == true) {
@@ -534,7 +533,7 @@ if ($handle = opendir('Takeout/Keep')) {
             sectionLabels = "<div class='labels mt-1'>" + labels + "</div>";
         }
 
-        sectionTimestamp = "<div class='timestamp'><p class='card-text  text-center'><small class='text-muted'> Edited:&nbsp;&nbsp;" + formatTS(timestamp) + "</small></p></div>";
+        sectionTimestamp = "<div class='timestamp'><p class='card-text  text-center'><small class='text-muted'> <i class='fas fa-pen'></i>&nbsp;&nbsp;" + formatTS(timestamp) + "</small></p></div>";
 
 
         if (body == true) {
@@ -549,7 +548,7 @@ if ($handle = opendir('Takeout/Keep')) {
             main = "";
         }
 
-        footer = "<div class='card-footer p-1 text-center'>" +
+        footer = "</div><div class='card-footer p-1 text-center'>" +
             sectionLabels +
             sectionSharees +
             sectionTimestamp +
@@ -559,7 +558,7 @@ if ($handle = opendir('Takeout/Keep')) {
             images +
             main +
             footer +
-            "</div></div></div>";
+            "</div></div>";
 
         return note;
 
