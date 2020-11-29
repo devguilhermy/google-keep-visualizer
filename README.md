@@ -20,7 +20,7 @@ A tool to visualize Google Keep notes exported via Takeout. Instead of having to
   <li> Create preview for links, and list the note sharees </li>
   <li> Differentiate between pinned, trashed, archived, and regular notes </li>
   <li> Groups the notes by category </li>
-  <li> Build the notes with accurate JSON formatted data, instead of scrapping HTML tags </li>
+  <li> Build the notes with accurate JSON formatted data, instead of scrapped HTML </li>
   <li> Settings page with display and grouping options </li>
   <li> Doesn't limit the size for the notes, so you have full-lenght content</li>
  </ul>
